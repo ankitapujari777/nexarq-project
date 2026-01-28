@@ -1,0 +1,9 @@
+name = "nexarq-task-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+kv_namespaces = [
+  { binding = "TASKS_KV", id = "id = "e26d91cf274f496db22b3a8665af02f4"
+" }
+]
+

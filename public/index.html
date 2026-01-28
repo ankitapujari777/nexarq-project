@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexarq Tasks</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    input, button { padding: 8px; margin: 4px 0; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Nexarq Task Manager</h1>
+
+  <h3>Create Task</h3>
+  <input id="title" placeholder="Title" /> <br />
+  <input id="description" placeholder="Description" /> <br />
+  <button onclick="createTask()">Add Task</button>
+
+  <h3>Tasks</h3>
+  <ul id="tasks"></ul>
+
+  <script>
+    const API = 'http://127.0.0.1:8787';
+
+    async function fetchTasks() {
+      const res = await fetch(`${API}/tasks`);
+      const data = await res.json();
+      const list = document.getElementById('tasks');
+      list.innerHTML = '';
+      data.forEach(task => {
+        const li = document.createElement('li');
+        li.textContent = `${task.title} - ${task.description}`;
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+        btn.onclick = () => deleteTask(task.id);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
+
+    async function createTask() {
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      await fetch(`${API}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description })
+      });
+      fetchTasks();
+    }
+
+    async function deleteTask(id) {
+      await fetch(`${API}/tasks/${id}`, { method: 'DELETE' });
+      fetchTasks();
+    }
+
+    fetchTasks();
+  </script>
+</body>
+</html>
